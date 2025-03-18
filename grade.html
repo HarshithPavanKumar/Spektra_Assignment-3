@@ -56,20 +56,18 @@
             document.getElementById('result').style.display = 'none';
             document.getElementById('error').style.display = 'none';
 
-            // Get and clean input
             const input = document.getElementById('numbers').value.trim();
             if (!input) {
                 showError('Please enter some numbers');
                 return;
             }
 
-            // Split and parse numbers
             const numbers = input.split(/\s+/).map(num => {
                 const parsed = parseFloat(num);
                 return isNaN(parsed) ? null : parsed;
             });
 
-            // Validate numbers
+            
             if (numbers.some(num => num === null)) {
                 showError('Contains invalid numbers. Please enter only numeric values.');
                 return;
