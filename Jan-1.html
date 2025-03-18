@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1st January Sundays Finder</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>1st January Sundays Finder</title>
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+            rel="stylesheet">
+        <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #7d8a47;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -26,48 +30,52 @@
             background-color: #e9ecef;
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="card main-card mb-4">
-            <div class="card-body">
-                <h1 class="card-title text-center mb-4 text-primary">
-                    1st January Sundays Finder
-                </h1>
+    </head>
+    <body>
+        <div class="container">
+            <div class="card main-card mb-4">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4 text-primary">
+                        1st January Sundays Finder
+                    </h1>
 
-                <!-- Date Inputs -->
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label for="startYear" class="form-label">Start Year</label>
-                        <input type="number" id="startYear" class="form-control" value="2014" min="1900" max="2100">
+                    <!-- Date Inputs -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="startYear" class="form-label">Start
+                                Year</label>
+                            <input type="number" id="startYear"
+                                class="form-control" value="2014">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="endYear" class="form-label">End
+                                Year</label>
+                            <input type="number" id="endYear"
+                                class="form-control" value="2050">
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <label for="endYear" class="form-label">End Year</label>
-                        <input type="number" id="endYear" class="form-control" value="2050" min="1900" max="2100">
+
+                    <!-- Find Button -->
+                    <div class="d-grid mb-4">
+                        <button class="btn btn-success" onclick="findSundays()">
+                            <i class="bi bi-search me-2"></i><i>Find Sundays</i>
+                        </button>
                     </div>
-                </div>
 
-                <!-- Find Button -->
-                <div class="d-grid mb-4">
-                    <button class="btn btn-success" onclick="findSundays()">
-                        <i class="bi bi-search me-2"></i>Find Sundays
-                    </button>
-                </div>
+                    <!-- Results -->
+                    <div class="alert alert-info" role="alert">
+                        Found <span id="count" class="fw-bold"></span> years
+                    </div>
 
-                <!-- Results -->
-                <div class="alert alert-info" role="alert">
-                    Found <span id="count" class="fw-bold">0</span> years
+                    <div id="output" class="list-group"></div>
                 </div>
-
-                <div id="output" class="list-group"></div>
             </div>
         </div>
-    </div>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
+        <script>
         function findSundays() {
             const output = document.getElementById("output");
             const startYear = parseInt(document.getElementById("startYear").value);
@@ -75,7 +83,6 @@
             let count = 0;
             let results = [];
 
-            // Validate input
             if (startYear > endYear) {
                 alert("Start year cannot be greater than end year.");
                 return;
@@ -98,8 +105,7 @@
             document.getElementById("count").textContent = count;
         }
 
-        // Initialize when page loads
         window.addEventListener('DOMContentLoaded', findSundays);
     </script>
-</body>
+    </body>
 </html>
