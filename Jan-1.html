@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1st January Sundays Finder</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .main-card {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        .result-item {
+            transition: all 0.3s ease;
+        }
+        .result-item:hover {
+            transform: translateX(10px);
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card main-card mb-4">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-4 text-primary">
+                    1st January Sundays Finder
+                </h1>
+
+                <!-- Date Inputs -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="startYear" class="form-label">Start Year</label>
+                        <input type="number" id="startYear" class="form-control" value="2014" min="1900" max="2100">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="endYear" class="form-label">End Year</label>
+                        <input type="number" id="endYear" class="form-control" value="2050" min="1900" max="2100">
+                    </div>
+                </div>
+
+                <!-- Find Button -->
+                <div class="d-grid mb-4">
+                    <button class="btn btn-success" onclick="findSundays()">
+                        <i class="bi bi-search me-2"></i>Find Sundays
+                    </button>
+                </div>
+
+                <!-- Results -->
+                <div class="alert alert-info" role="alert">
+                    Found <span id="count" class="fw-bold">0</span> years
+                </div>
+
+                <div id="output" class="list-group"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function findSundays() {
+            const output = document.getElementById("output");
+            const startYear = parseInt(document.getElementById("startYear").value);
+            const endYear = parseInt(document.getElementById("endYear").value);
+            let count = 0;
+            let results = [];
+
+            // Validate input
+            if (startYear > endYear) {
+                alert("Start year cannot be greater than end year.");
+                return;
+            }
+
+            for (let year = startYear; year <= endYear; year++) {
+                const date = new Date(year, 0, 1);
+                if (date.getDay() === 0) {
+                    results.push(
+                        `<div class="list-group-item result-item">
+                            <i class="bi bi-calendar-event me-2"></i>
+                            1st January ${year} was a Sunday
+                        </div>`
+                    );
+                    count++;
+                }
+            }
+
+            output.innerHTML = results.join("");
+            document.getElementById("count").textContent = count;
+        }
+
+        // Initialize when page loads
+        window.addEventListener('DOMContentLoaded', findSundays);
+    </script>
+</body>
+</html>

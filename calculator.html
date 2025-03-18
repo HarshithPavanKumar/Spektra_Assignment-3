@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2a2a72;
+            --secondary: #009ffd;
+            --background: #f8f9fa;
+            --text: #2c3e50;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calculator-container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .calculator-header {
+            background: var(--primary);
+            color: white;
+            border-radius: 1rem 1rem 0 0;
+            padding: 1.5rem;
+        }
+
+        .form-control-custom {
+            border: 2px solid var(--secondary);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-custom:focus {
+            box-shadow: 0 0 0 0.25rem rgba(0, 159, 253, 0.25);
+            border-color: var(--secondary);
+        }
+
+        .operator-select {
+            background: var(--background);
+            border: 2px solid var(--secondary);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .btn-calculate {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 159, 253, 0.3);
+        }
+
+        .result-card {
+            background: rgba(0, 159, 253, 0.1);
+            border: 2px solid var(--secondary);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .result-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .history-item {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+            margin: 0.25rem 0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="calculator-header text-center">
+            <h2 class="mb-0"><i class="bi bi-calculator me-2"></i>Scientific Calculator</h2>
+        </div>
+        
+        <div class="p-4">
+            <div class="mb-4">
+                <input type="number" 
+                       class="form-control form-control-custom" 
+                       id="num1" 
+                       placeholder="Enter first number">
+            </div>
+
+            <div class="mb-4">
+                <select class="form-select operator-select py-2" id="operator">
+                    <option value="+">Addition (+)</option>
+                    <option value="-">Subtraction (-)</option>
+                    <option value="*">Multiplication (×)</option>
+                    <option value="/">Division (÷)</option>
+                    <option value="%">Percentage (%)</option>
+                    <option value="mod">Modulus (mod)</option>
+                    <option value="^">Exponentiation (^)</option>
+                    <option value="√">Square Root (√)</option>
+                </select>
+            </div>
+
+            <div class="mb-4" id="num2Container">
+                <input type="number" 
+                       class="form-control form-control-custom" 
+                       id="num2" 
+                       placeholder="Enter second number">
+            </div>
+
+            <button class="btn-calculate w-100 mb-4" 
+                    onclick="calculate()">
+                <i class="bi bi-calculator me-2"></i>Calculate
+            </button>
+
+            <div id="result" class="result-card mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span id="resultText"></span>
+                    <button class="btn btn-sm btn-outline-secondary" 
+                            onclick="copyResult()">
+                        <i class="bi bi-clipboard"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="alert alert-danger d-none" id="error" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <span id="errorText"></span>
+            </div>
+
+            <div class="history-section mt-4">
+                <h6 class="text-muted mb-3"><i class="bi bi-clock-history me-2"></i>Recent Calculations</h6>
+                <div id="historyList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        let calculationHistory = [];
+        
+        document.getElementById('operator').addEventListener('change', function() {
+            const num2Container = document.getElementById('num2Container');
+            num2Container.style.display = this.value === '√' ? 'none' : 'block';
+        });
+
+        function calculate() {
+            const resultCard = document.getElementById('result');
+            const errorAlert = document.getElementById('error');
+            resultCard.classList.remove('visible');
+            errorAlert.classList.add('d-none');
+
+            const num1 = parseFloat(document.getElementById('num1').value);
+            const operator = document.getElementById('operator').value;
+            const num2 = operator !== '√' ? parseFloat(document.getElementById('num2').value) : null;
+
+            try {
+                if (isNaN(num1)) throw new Error('Please enter a valid first number');
+                if (operator !== '√' && isNaN(num2)) throw new Error('Please enter valid numbers');
+
+                const result = performCalculation(num1, operator, num2);
+                const calculationString = operator == '√' 
+                    ? `√${num1} = ${result}`
+                    : `${num1} ${operator} ${num2} = ${result}`;
+
+                showResult(calculationString, result);
+                addToHistory(calculationString);
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        function performCalculation(num1, operator, num2) {
+            switch(operator) {
+                case '+': return num1 + num2;
+                case '-': return num1 - num2;
+                case '*': return num1 * num2;
+                case '/': 
+                    if (num2 === 0) throw new Error('Cannot divide by zero');
+                    return num1 / num2;
+                case '%': return (num1 / 100) * num2;
+                case 'mod':
+                    if (num2 === 0) throw new Error('Cannot calculate modulus with zero');
+                    return num1 % num2;
+                case '^': return Math.pow(num1, num2);
+                case '√': 
+                    if (num1 < 0) throw new Error('Cannot calculate square root of negative number');
+                    return Math.sqrt(num1).toFixed(4);
+                default: throw new Error('Invalid operation');
+            }
+        }
+
+        function showResult(calculationString, result) {
+            const resultCard = document.getElementById('result');
+            const resultText = document.getElementById('resultText');
+            resultText.textContent = calculationString;
+            resultCard.classList.add('visible');
+            document.getElementById('error').classList.add('d-none');
+        }
+
+        function showError(message) {
+            const errorAlert = document.getElementById('error');
+            document.getElementById('errorText').textContent = message;
+            errorAlert.classList.remove('d-none');
+            document.getElementById('result').classList.remove('visible');
+        }
+
+        function addToHistory(calculation) {
+            calculationHistory.unshift(calculation);
+            if (calculationHistory.length > 5) calculationHistory.pop();
+            
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = calculationHistory
+                .map(item => `<div class="history-item">${item}</div>`)
+                .join('');
+        }
+
+        function copyResult() {
+            const resultText = document.getElementById('resultText').textContent;
+            navigator.clipboard.writeText(resultText.split('=')[1].trim());
+        }
+    </script>
+</body>
+</html>

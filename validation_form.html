@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Form Validation</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            background-color: #000231;
+        }
+        .form-card {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center">
+    <div class="container">
+        <div class="card form-card">
+            <div class="card-body p-4">
+                <h2 class="card-title mb-4 text-center">Registration Form</h2>
+                
+                <form id="validatedForm" novalidate>
+                    <!-- Full Name -->
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="fullName" 
+                               placeholder="John Doe">
+                        <div class="invalid-feedback" id="nameError"></div>
+                    </div>
+
+                    <!-- Father's Name -->
+                    <div class="mb-3">
+                        <label for="fatherName" class="form-label">Father's Name</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="fatherName" 
+                               placeholder="John Doe Sr.">
+                        <div class="invalid-feedback" id="fatherNameError"></div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" 
+                               class="form-control" 
+                               id="email" 
+                               placeholder="john@example.com">
+                        <div class="invalid-feedback" id="emailError"></div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" 
+                               class="form-control" 
+                               id="password" 
+                               placeholder="••••••••">
+                        <div class="invalid-feedback" id="passwordError"></div>
+                    </div>
+
+                    <!-- Age -->
+                    <div class="mb-3">
+                        <label for="age" class="form-label">Age</label>
+                        <input type="number" 
+                               class="form-control" 
+                               id="age" 
+                               placeholder="18">
+                        <div class="invalid-feedback" id="ageError"></div>
+                    </div>
+
+                    <!-- Country -->
+                    <div class="mb-3">
+                        <label for="country" class="form-label">Country</label>
+                        <select class="form-select" id="country">
+                            <option value="">Select Country</option>
+                            <option value="USA">United States</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Australia">Australia</option>
+                            <option value="India">India</option>
+                        </select>
+                        <div class="invalid-feedback" id="countryError"></div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="mb-4">
+                        <label for="address" class="form-label">Address</label>
+                        <textarea class="form-control" 
+                                  id="address" 
+                                  rows="3" 
+                                  placeholder="123 Main St, City, Country"></textarea>
+                        <div class="invalid-feedback" id="addressError"></div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary w-100">Submit Form</button>
+                    
+                    <!-- Success Message -->
+                    <div class="alert alert-success mt-3 d-none" 
+                         id="successMessage" role="alert">
+                        Form submitted successfully!
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const form = document.getElementById('validatedForm');
+        const fields = {
+            name: {
+                element: document.getElementById('fullName'),
+                error: document.getElementById('nameError'),
+                validate: (value) => {
+                    if (!value.trim()) return 'Name is required';
+                    if (value.length < 3) return 'Minimum 3 characters required';
+                    return null;
+                }
+            },
+            fatherName: {
+                element: document.getElementById('fatherName'),
+                error: document.getElementById('fatherNameError'),
+                validate: (value) => {
+                    if (!value.trim()) return 'Father\'s Name is required';
+                    if (value.length < 3) return 'Minimum 3 characters required';
+                    return null;
+                }
+            },
+            email: {
+                element: document.getElementById('email'),
+                error: document.getElementById('emailError'),
+                validate: (value) => {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!value.trim()) return 'Email is required';
+                    if (!emailRegex.test(value)) return 'Invalid email format';
+                    return null;
+                }
+            },
+            password: {
+                element: document.getElementById('password'),
+                error: document.getElementById('passwordError'),
+                validate: (value) => {
+                    if (!value) return 'Password is required';
+                    if (value.length < 8) return 'Minimum 8 characters required';
+                    return null;
+                }
+            },
+            age: {
+                element: document.getElementById('age'),
+                error: document.getElementById('ageError'),
+                validate: (value) => {
+                    if (!value) return 'Age is required';
+                    if (isNaN(value) || value < 1 || value > 120) return 'Invalid age';
+                    return null;
+                }
+            },
+            country: {
+                element: document.getElementById('country'),
+                error: document.getElementById('countryError'),
+                validate: (value) => {
+                    if (!value) return 'Country is required';
+                    return null;
+                }
+            },
+            address: {
+                element: document.getElementById('address'),
+                error: document.getElementById('addressError'),
+                validate: (value) => {
+                    if (!value.trim()) return 'Address is required';
+                    if (value.length < 10) return 'Address must be at least 10 characters';
+                    return null;
+                }
+            }
+        };
+
+        const showError = (field, message) => {
+            field.element.classList.add('is-invalid');
+            field.error.textContent = message;
+        };
+
+        const hideError = (field) => {
+            field.element.classList.remove('is-invalid');
+            field.error.textContent = '';
+        };
+
+        const validateField = (field) => {
+            const error = field.validate(field.element.value);
+            error ? showError(field, error) : hideError(field);
+            return !error;
+        };
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            let isValid = true;
+            
+            Object.values(fields).forEach(field => {
+                if (!validateField(field)) isValid = false;
+            });
+
+            if (isValid) {
+                const successMessage = document.getElementById('successMessage');
+                successMessage.classList.remove('d-none');
+                
+                setTimeout(() => {
+                    form.reset();
+                    successMessage.classList.add('d-none');
+                    Object.values(fields).forEach(field => hideError(field));
+                }, 2000);
+            }
+        });
+
+        // Real-time validation
+        Object.entries(fields).forEach(([key, field]) => {
+            field.element.addEventListener('input', () => validateField(field));
+        });
+    </script>
+</body>
+</html>

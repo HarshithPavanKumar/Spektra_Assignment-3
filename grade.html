@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Array Calculator with Grading</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+        <style>
+        body {
+            background-color: #a6a0a0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .calculator {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+    </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="calculator p-4 mb-4">
+                <h2 class="mb-4 text-center">Array Calculator with Grading</h2>
+
+                <div class="mb-3">
+                    <label for="numbers" class="form-label">Enter numbers
+                        (space-separated):</label>
+                    <input type="text" class="form-control form-control-lg"
+                        id="numbers" placeholder="Example: 80 75 90 85">
+                </div>
+
+                <button class="btn btn-success w-100 btn-lg"
+                    onclick="calculate()">Calculate</button>
+
+                <div class="alert alert-success mt-4" id="result" role="alert"
+                    style="display: none;">
+                    <h5 class="alert-heading">Results:</h5>
+                    <div id="resultContent"></div>
+                </div>
+
+                <div class="alert alert-danger mt-3" id="error"
+                    role="alert" style="display: none;"></div>
+            </div>
+        </div>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+        function calculate() {
+            // Reset displays
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+
+            // Get and clean input
+            const input = document.getElementById('numbers').value.trim();
+            if (!input) {
+                showError('Please enter some numbers');
+                return;
+            }
+
+            // Split and parse numbers
+            const numbers = input.split(/\s+/).map(num => {
+                const parsed = parseFloat(num);
+                return isNaN(parsed) ? null : parsed;
+            });
+
+            // Validate numbers
+            if (numbers.some(num => num === null)) {
+                showError('Contains invalid numbers. Please enter only numeric values.');
+                return;
+            }
+
+            // Calculate sum (ensure numeric calculation)
+            const sum = numbers.reduce((acc, num) => acc + num, 0);
+            
+            // Calculate average (keep as number for calculations)
+            const average = sum / numbers.length;
+            const averageDisplay = average.toFixed(2);
+            
+            // Determine grade (use numeric average)
+            const grade = getGrade(average);
+
+            // Display results
+            showResults(sum, averageDisplay, grade);
+        }
+
+        function getGrade(average) {
+            if (average >= 91) return 'A';
+            if (average >= 81) return 'B';
+            if (average >= 71) return 'C';
+            return 'D';
+        }
+
+        function showResults(sum, average, grade) {
+            const resultContent = document.getElementById('resultContent');
+            resultContent.innerHTML = `
+                <strong>Sum:</strong> ${sum}<br>
+                <strong>Average:</strong> ${average}%<br>
+                <strong>Grade:</strong> ${grade}
+            `;
+            document.getElementById('result').style.display = 'block';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+    </body>
+</html>
